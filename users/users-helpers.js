@@ -1,28 +1,20 @@
-const db = require('../data/dbConfig.js');
+module.exports = {
+    validateUser
+};
 
-module.exports ={
-    find,
-    findBy,
-    add,
-    findById
-}
+function validateUser(user) {
+    let errors = [];
 
-function find() {
-    return db('users').select('id', 'username', 'department');
-}
+    if (!user.username || user.username.length < 2) {
+        errors.push('Please include a username with at least 2 characters')
+    }
 
-function findBy(filter) {
-    return db('users').where(filter)
-}
+    if (!user.password || user.password.length < 4) {
+        errors.push('Please include a password with at least 4 characters');
+    }
 
-async function add(user) {
-    const [id] = await db('users').insert(user);
-
-    return findById(id);
-}
-
-function findById(id) {
-    return db('users')
-    .where({ id })
-    .first()
+    return {
+        isSuccessful: errors.length > 0 ? false : true,
+        errors
+    };
 }
